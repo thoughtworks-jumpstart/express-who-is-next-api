@@ -17,5 +17,8 @@
   "bugs": {
     "url": "https://github.com/thoughtworks-jumpstart/express-who-is-next-api/issues"
   },
-  "homepage": "https://github.com/thoughtworks-jumpstart/express-who-is-next-api#readme"
+  "homepage": "https://github.com/thoughtworks-jumpstart/express-who-is-next-api#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
 }
