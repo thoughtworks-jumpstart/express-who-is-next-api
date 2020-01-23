@@ -15,6 +15,19 @@ const requireJsonContent = (req, res, next) => {
   }
 };
 
+app.param("id", (req, res, next, id) => {
+  const idInt = parseInt(id);
+  const participant = participants.find(p => {
+    return p.id === idInt;
+  });
+  req.participant = participant;
+
+  const index = participants.map(p => p.id).indexOf(idInt); // or use findIndex
+  req.index = index;
+
+  next();
+});
+
 app.get("/", (req, res) => {
   res.json({
     "0": "GET    /",
@@ -56,9 +69,7 @@ app.post("/participants", requireJsonContent, (req, res) => {
 });
 
 app.get("/participants/:id", (req, res) => {
-  const participant = participants.find(p => {
-    return p.id === parseInt(req.params.id);
-  });
+  const participant = req.participant;
   if (participant) {
     res.json(participant);
   } else {
@@ -71,7 +82,7 @@ app.get("/participants/:id", (req, res) => {
 });
 
 app.put("/participants/:id", requireJsonContent, (req, res) => {
-  const index = participants.map(p => p.id).indexOf(parseInt(req.params.id)); // or use findIndex
+  const index = req.index;
   if (index >= 0) {
     // need validation here
     const participant = req.body;
@@ -87,7 +98,7 @@ app.put("/participants/:id", requireJsonContent, (req, res) => {
 });
 
 app.delete("/participants/:id", (req, res) => {
-  const index = participants.map(p => p.id).indexOf(parseInt(req.params.id)); // or use findIndex
+  const index = req.index;
   if (index >= 0) {
     const removedParticipant = participants[index];
     participants.splice(index, 1);
