@@ -58,6 +58,10 @@ app.post("/whonext", (req, res) => {
   }
 });
 
+app.get("/whonext", (req, res) => {
+  res.json(whonexts);
+});
+
 app.get("/participants", (req, res) => {
   res.json(participants);
 });
