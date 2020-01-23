@@ -7,6 +7,14 @@ let whonexts = [];
 
 app.use(express.json());
 
+const requireJsonContent = (req, res, next) => {
+  if (req.headers["content-type"] !== "application/json") {
+    res.status(400).send("Server wants application/json!");
+  } else {
+    next();
+  }
+};
+
 app.get("/", (req, res) => {
   res.json({
     "0": "GET    /",
@@ -41,7 +49,7 @@ app.get("/participants", (req, res) => {
   res.json(participants);
 });
 
-app.post("/participants", (req, res) => {
+app.post("/participants", requireJsonContent, (req, res) => {
   const participant = req.body;
   participants.push(participant);
   res.json([participant]);
@@ -62,7 +70,7 @@ app.get("/participants/:id", (req, res) => {
   }
 });
 
-app.put("/participants/:id", (req, res) => {
+app.put("/participants/:id", requireJsonContent, (req, res) => {
   const index = participants.map(p => p.id).indexOf(parseInt(req.params.id)); // or use findIndex
   if (index >= 0) {
     // need validation here
