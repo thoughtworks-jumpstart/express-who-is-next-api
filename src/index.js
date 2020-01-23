@@ -47,6 +47,37 @@ app.post("/participants", (req, res) => {
   res.json([participant]);
 });
 
+app.get("/participants/:id", (req, res) => {
+  const participant = participants.find(p => {
+    return p.id === parseInt(req.params.id);
+  });
+  if (participant) {
+    res.json(participant);
+  } else {
+    res.status(404).json({
+      errors: {
+        404: "No participant of such id found!",
+      },
+    });
+  }
+});
+
+app.put("/participants/:id", (req, res) => {
+  const index = participants.map(p => p.id).indexOf(parseInt(req.params.id)); // or use findIndex
+  if (index >= 0) {
+    // need validation here
+    const participant = req.body;
+    participants[index] = participant;
+    res.json(participant);
+  } else {
+    res.status(404).json({
+      errors: {
+        404: "No participant of such id found!",
+      },
+    });
+  }
+});
+
 const server = app.listen(PORT, () => {
   console.log(`Express app started on http://localhost:${PORT}`);
 });
