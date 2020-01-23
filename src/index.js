@@ -86,6 +86,21 @@ app.put("/participants/:id", requireJsonContent, (req, res) => {
   }
 });
 
+app.delete("/participants/:id", (req, res) => {
+  const index = participants.map(p => p.id).indexOf(parseInt(req.params.id)); // or use findIndex
+  if (index >= 0) {
+    const removedParticipant = participants[index];
+    participants.splice(index, 1);
+    res.json(removedParticipant);
+  } else {
+    res.status(404).json({
+      errors: {
+        404: "No participant of such id found!",
+      },
+    });
+  }
+});
+
 const server = app.listen(PORT, () => {
   console.log(`Express app started on http://localhost:${PORT}`);
 });
