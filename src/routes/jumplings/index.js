@@ -40,6 +40,7 @@ const requireJsonContent = (req, res, next) => {
 
 router.post("/", requireJsonContent, (req, res) => {
   const jumpling = req.body;
+  // need validation here
   jumplings.push(jumpling);
   res.json([jumpling]);
 });
