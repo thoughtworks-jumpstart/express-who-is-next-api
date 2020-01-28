@@ -7,12 +7,9 @@ const createOne = async (req, res, next) => {
     presenters.push(presenter);
     res.status(201).json([presenter]);
   } else {
-    const statusCode = 500;
-    res.status(statusCode).json({
-      errors: {
-        statusCode: "No jumplings to be next!",
-      },
-    });
+    const err = new Error("Bad Request: No jumplings to be next!");
+    err.code = 400;
+    next(err);
   }
 };
 

@@ -32,7 +32,9 @@ router.get("/", (req, res) => {
 
 const requireJsonContent = (req, res, next) => {
   if (req.headers["content-type"] !== "application/json") {
-    res.status(400).send("Server wants application/json!");
+    const err = new Error("Server wants application/json!");
+    err.code = 400;
+    next(err);
   } else {
     next();
   }
@@ -50,27 +52,22 @@ router.get("/:id", (req, res) => {
   if (jumpling) {
     res.json(jumpling);
   } else {
-    res.status(404).json({
-      errors: {
-        404: "No jumpling of such id found!",
-      },
-    });
+    const err = new Error("Not Found: No jumpling of such id found!");
+    err.code = 404;
+    next(err);
   }
 });
 
 router.put("/:id", requireJsonContent, (req, res) => {
   const index = req.index;
   if (index >= 0) {
-    // need validation here
     const jumpling = req.body;
     jumplings[index] = jumpling;
     res.json(jumpling);
   } else {
-    res.status(404).json({
-      errors: {
-        404: "No jumpling of such id found!",
-      },
-    });
+    const err = new Error("Not Found: No jumpling of such id found!");
+    err.code = 404;
+    next(err);
   }
 });
 
@@ -79,18 +76,16 @@ router.delete("/", (req, res) => {
   res.json(jumplings);
 });
 
-router.delete("/:id", (req, res) => {
+router.delete("/:id", (req, res, next) => {
   const index = req.index;
   if (index >= 0) {
     const removedJumpling = jumplings[index];
     jumplings.splice(index, 1);
     res.json(removedJumpling);
   } else {
-    res.status(404).json({
-      errors: {
-        404: "No jumpling of such id found!",
-      },
-    });
+    let err = new Error("Not Found: No jumpling of such id found!");
+    err.code = 404;
+    next(err);
   }
 });
 

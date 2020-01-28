@@ -20,4 +20,14 @@ app.get("/", (req, res) => {
   });
 });
 
+app.use((err, req, res, next) => {
+  console.log(err);
+  res.status(err.code || 500);
+  if (err.code) {
+    res.send({ error: err.message });
+  } else {
+    res.send({ error: "internal server error" });
+  }
+});
+
 module.exports = app;
