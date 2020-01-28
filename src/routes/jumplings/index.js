@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const Joi = require("@hapi/joi");
 
 let jumplings = [];
 
@@ -12,6 +13,18 @@ router.use(
   },
   presenterRouter
 );
+
+const validateJumpling = jumpling => {
+  const schema = Joi.object({
+    id: Joi.number()
+      .integer()
+      .required(),
+    name: Joi.string()
+      .min(3)
+      .required(),
+  });
+  return schema.validate(jumpling);
+};
 
 router.param("id", (req, res, next, id) => {
   const idInt = parseInt(id);
@@ -40,9 +53,14 @@ const requireJsonContent = (req, res, next) => {
   }
 };
 
-router.post("/", requireJsonContent, (req, res) => {
+router.post("/", requireJsonContent, (req, res, next) => {
   const jumpling = req.body;
-  // need validation here
+  const validation = validateJumpling(jumpling);
+  if (validation.error) {
+    const err = new Error(validation.error.details[0].message);
+    err.code = 400;
+    return next(err);
+  }
   jumplings.push(jumpling);
   res.json([jumpling]);
 });
@@ -58,10 +76,16 @@ router.get("/:id", (req, res) => {
   }
 });
 
-router.put("/:id", requireJsonContent, (req, res) => {
+router.put("/:id", requireJsonContent, (req, res, next) => {
   const index = req.index;
   if (index >= 0) {
     const jumpling = req.body;
+    const validation = validateJumpling(jumpling);
+    if (validation.error) {
+      const err = new Error(validation.error.details[0].message);
+      err.code = 400;
+      return next(err);
+    }
     jumplings[index] = jumpling;
     res.json(jumpling);
   } else {
