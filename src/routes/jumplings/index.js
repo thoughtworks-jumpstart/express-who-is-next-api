@@ -73,6 +73,11 @@ router.put("/:id", requireJsonContent, (req, res) => {
   }
 });
 
+router.delete("/", (req, res) => {
+  jumplings.splice(0, jumplings.length);
+  res.json(jumplings);
+});
+
 router.delete("/:id", (req, res) => {
   const index = req.index;
   if (index >= 0) {
