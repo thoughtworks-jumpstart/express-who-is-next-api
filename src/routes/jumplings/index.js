@@ -65,7 +65,7 @@ router.post("/", requireJsonContent, (req, res, next) => {
   res.json([jumpling]);
 });
 
-router.get("/:id", (req, res) => {
+router.get("/:id", (req, res, next) => {
   const jumpling = req.jumpling;
   if (jumpling) {
     res.json(jumpling);
